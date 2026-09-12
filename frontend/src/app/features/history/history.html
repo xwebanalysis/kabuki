@@ -1,0 +1,40 @@
+<header class="section-header">
+  <div>
+    <h1 class="t-heading">{{ t('history.title') }}</h1>
+    <span class="t-label">{{ t('history.subtitle') }}</span>
+  </div>
+</header>
+
+@if (loading) {
+  <div class="t-label text-warning">[ LOADING... ]</div>
+}
+@if (error) {
+  <div class="t-label text-accent">[ERROR: {{ error }}]</div>
+}
+@if (notice) {
+  <div class="t-label text-success">{{ notice }}</div>
+}
+
+@if (history.length > 0) {
+  <div class="history-list">
+    @for (item of history; track item.id) {
+      <div class="history-item">
+        <a class="history-link" [routerLink]="['/analysis', item.id]">
+          <span class="t-data">#{{ item.id }}</span>
+          <span class="t-data history-target">{{ item.target }}</span>
+          <app-status-badge [status]="item.status" />
+          <span class="t-label history-counts">
+            {{ item.finding_count }}F / {{ item.waf_count }}W / {{ item.cdn_count }}C /
+            {{ item.challenge_count }}X / {{ item.rate_limit_count }}R
+          </span>
+        </a>
+        <button type="button" class="delete-btn t-label" (click)="remove(item.id)">[ DELETE ]</button>
+      </div>
+    }
+  </div>
+  <button type="button" class="btn-primary delete-all" (click)="removeAll()">
+    {{ t('history.delete_all') }}
+  </button>
+} @else if (!loading) {
+  <div class="empty-state t-label">{{ t('history.empty') }}</div>
+}

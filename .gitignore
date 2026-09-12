@@ -1,0 +1,11 @@
+backend/.venv/
+backend/kabuki.db
+backend/kabuki.db-wal
+backend/kabuki.db-shm
+backend/.pytest_cache/
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+__pycache__/
+*.pyc
+.DS_Store

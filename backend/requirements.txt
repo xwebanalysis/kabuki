@@ -1,0 +1,15 @@
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+SQLAlchemy==2.0.52
+pydantic==2.13.5
+httpx==0.28.1
+dnspython==2.8.0
+PyJWT==2.14.0
+
+# xwa-sdk (shared XWA contracts) is NOT pinned here on purpose.
+# The .sh scripts install it local-first:
+#   pip install -e /home/x/Documents/xwebanalysis/xwa-sdk/bindings/python
+# Fallback (published repo):
+#   pip install "xwa-sdk @ git+https://github.com/xwebanalysis/xwa-sdk.git#subdirectory=bindings/python"
+#
+# PostgreSQL support (docker mode) lives in requirements-postgres.txt.

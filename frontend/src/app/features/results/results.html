@@ -1,0 +1,229 @@
+@if (loading) {
+  <div class="t-label text-warning">[ LOADING... ]</div>
+}
+@if (error) {
+  <div class="t-label text-accent">[ERROR: {{ error }}]</div>
+}
+
+@if (analysis) {
+  <section class="results route-container">
+    <header class="results-hero">
+      <div class="hero-main">
+        <span class="t-label">ANALYSIS #{{ analysis.id }} / {{ analysis.target }}</span>
+        <div class="hero-number t-display-xl">{{ analysis.findings.length }}</div>
+        <span class="t-label">{{ t('results.findings') }} — {{ analysis.status }}</span>
+      </div>
+      <div class="hero-side">
+        <app-status-badge [status]="analysis.status" />
+        <app-export-actions [analysis]="analysis" />
+      </div>
+    </header>
+
+    <div class="metric-grid">
+      <app-metric-card
+        [label]="t('results.waf')"
+        [value]="analysis.waf_detections.length"
+        [status]="analysis.waf_detections.length ? 'high' : 'pass'"
+      />
+      <app-metric-card
+        [label]="t('results.cdn')"
+        [value]="analysis.cdn_observations.length"
+        [status]="analysis.cdn_observations.length ? 'info' : 'pass'"
+      />
+      <app-metric-card
+        [label]="t('results.challenges')"
+        [value]="analysis.challenges.length"
+        [status]="analysis.challenges.length ? 'medium' : 'pass'"
+      />
+      <app-metric-card
+        [label]="t('results.rate_limit')"
+        [value]="analysis.rate_limit_observations[0]?.limit ?? 'N/A'"
+        unit="REQ"
+        [status]="analysis.rate_limit_observations[0]?.limit ? 'info' : 'low'"
+      />
+    </div>
+
+    <h2 class="t-label section-title">{{ t('results.waf') }}</h2>
+    <section class="panel">
+      @if (analysis.waf_detections.length > 0) {
+        <table>
+          <thead>
+            <tr>
+              <th class="t-label">VENDOR</th>
+              <th class="t-label">PRODUCT</th>
+              <th class="t-label">CONFIDENCE</th>
+              <th class="t-label">METHOD</th>
+              <th class="t-label">BLOCKED</th>
+              <th class="t-label">EVIDENCE</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (waf of analysis.waf_detections; track waf.id) {
+              <tr>
+                <td class="t-data text-interactive">{{ waf.vendor }}</td>
+                <td class="t-data">{{ waf.product || '—' }}</td>
+                <td class="t-data">{{ waf.confidence || '—' }}</td>
+                <td class="t-data">{{ waf.detection_method || '—' }}</td>
+                <td class="t-data" [class.text-accent]="waf.blocked" [class.text-success]="!waf.blocked">
+                  {{ waf.blocked ? 'YES' : 'NO' }}
+                </td>
+                <td class="t-data evidence-cell">{{ waf.evidence || '—' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <div class="empty-state t-label">{{ t('results.no_waf') }}</div>
+      }
+    </section>
+
+    <h2 class="t-label section-title">{{ t('results.cdn') }}</h2>
+    <section class="panel">
+      @if (analysis.cdn_observations.length > 0) {
+        @for (cdn of analysis.cdn_observations; track cdn.id) {
+          <div class="cdn-row">
+            <div>
+              <span class="t-label">PROVIDER</span>
+              <div class="t-data text-interactive">{{ cdn.provider }}</div>
+            </div>
+            <div>
+              <span class="t-label">CACHING</span>
+              <div class="t-data">{{ cdn.caching || 'unknown' }}</div>
+            </div>
+            <div>
+              <span class="t-label">ORIGIN HIDDEN</span>
+              <div class="t-data" [class.text-success]="cdn.origin_hidden" [class.text-warning]="!cdn.origin_hidden">
+                {{ cdn.origin_hidden ? 'YES' : 'NO' }}
+              </div>
+            </div>
+            <div class="cdn-nodes">
+              <span class="t-label">EDGE NODES ({{ edgeNodes(cdn).length }})</span>
+              <div class="t-data node-list">
+                @for (node of edgeNodes(cdn); track node) {
+                  <span class="node">{{ node }}</span>
+                } @empty {
+                  <span class="text-muted">—</span>
+                }
+              </div>
+            </div>
+          </div>
+          @if (cdn.evidence) {
+            <div class="t-data evidence-cell">{{ cdn.evidence }}</div>
+          }
+        }
+      } @else {
+        <div class="empty-state t-label">{{ t('results.no_cdn') }}</div>
+      }
+    </section>
+
+    <h2 class="t-label section-title">{{ t('results.challenges') }}</h2>
+    <section class="panel">
+      @if (analysis.challenges.length > 0) {
+        <table>
+          <thead>
+            <tr>
+              <th class="t-label">KIND</th>
+              <th class="t-label">STATUS</th>
+              <th class="t-label">SEVERITY</th>
+              <th class="t-label">TIME</th>
+              <th class="t-label">INDICATORS</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (challenge of analysis.challenges; track challenge.id) {
+              <tr>
+                <td class="t-data">{{ challenge.kind }}</td>
+                <td class="t-data">{{ challenge.status_code ?? '—' }}</td>
+                <td class="t-data" [class]="severityClass(challenge.severity_hint)">
+                  {{ (challenge.severity_hint || 'info').toUpperCase() }}
+                </td>
+                <td class="t-data">
+                  {{ challenge.response_time_ms !== null ? (challenge.response_time_ms | number: '1.0-1') + ' MS' : '—' }}
+                </td>
+                <td class="t-data evidence-cell">{{ indicators(challenge).join(', ') || '—' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <div class="empty-state t-label">{{ t('results.no_challenges') }}</div>
+      }
+    </section>
+
+    <h2 class="t-label section-title">{{ t('results.rate_limit') }}</h2>
+    <section class="panel">
+      @if (analysis.rate_limit_observations.length > 0) {
+        @for (rateLimit of analysis.rate_limit_observations; track rateLimit.id) {
+          <table class="rate-table">
+            <thead>
+              <tr>
+                <th class="t-label">SCOPE</th>
+                <th class="t-label">LIMIT</th>
+                <th class="t-label">WINDOW</th>
+                <th class="t-label">THRESHOLD EST.</th>
+                <th class="t-label">RECOMMENDED DELAY</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="t-data">{{ rateLimit.scope }}</td>
+                <td class="t-data">{{ rateLimit.limit ?? '—' }}</td>
+                <td class="t-data">
+                  {{ rateLimit.window_seconds !== null ? rateLimit.window_seconds + ' S' : '—' }}
+                </td>
+                <td class="t-data">{{ rateLimit.threshold_estimate ?? 'NOT PROBED' }}</td>
+                <td class="t-data text-warning">
+                  {{ rateLimit.recommended_delay_ms !== null ? rateLimit.recommended_delay_ms + ' MS' : '—' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          @if (headerEntries(rateLimit.headers).length > 0) {
+            <div class="header-list">
+              @for (header of headerEntries(rateLimit.headers); track header[0]) {
+                <div class="t-data header-line">
+                  <span class="t-label">{{ header[0] }}</span>
+                  <span>{{ header[1] }}</span>
+                </div>
+              }
+            </div>
+          }
+        }
+      } @else {
+        <div class="empty-state t-label">{{ t('results.no_rate_limit') }}</div>
+      }
+    </section>
+
+    <h2 class="t-label section-title">{{ t('results.findings') }} ({{ analysis.findings.length }})</h2>
+    <section class="panel">
+      @if (analysis.findings.length > 0) {
+        <table>
+          <thead>
+            <tr>
+              <th class="t-label">SEVERITY</th>
+              <th class="t-label">CATEGORY</th>
+              <th class="t-label">CHECK</th>
+              <th class="t-label">TITLE</th>
+              <th class="t-label">CONF.</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (finding of analysis.findings; track finding.id) {
+              <tr>
+                <td class="t-data" [class]="severityClass(finding.severity)">
+                  {{ finding.severity.toUpperCase() }}
+                </td>
+                <td class="t-data">{{ finding.category || '—' }}</td>
+                <td class="t-data">{{ finding.check || '—' }}</td>
+                <td class="t-data finding-title">{{ finding.title }}</td>
+                <td class="t-data">{{ finding.confidence || '—' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <div class="empty-state t-label">[ NO FINDINGS ]</div>
+      }
+    </section>
+  </section>
+}
