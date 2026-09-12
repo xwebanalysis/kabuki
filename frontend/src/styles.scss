@@ -1,0 +1,246 @@
+/* Self-hosted fonts: woff2 files live in public/fonts, @font-face lives here
+ * so the Angular build compiles it into the global stylesheet. */
+@use 'fonts';
+
+/*====================================
+ * NOTHING DESIGN SYSTEM - TOKENS
+ *====================================*/
+
+:root {
+  /* Fonts (self-hosted woff2 in public/fonts) */
+  --font-display: 'Doto', 'Space Mono', monospace;
+  --font-body: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+  --font-data: 'Space Mono', 'JetBrains Mono', monospace;
+
+  /* Type Scale */
+  --display-xl: 72px;
+  --display-lg: 48px;
+  --display-md: 36px;
+  --heading: 24px;
+  --subheading: 18px;
+  --body: 16px;
+  --body-sm: 14px;
+  --caption: 12px;
+  --label: 11px;
+
+  /* Spacing Scale (8px base) */
+  --space-2xs: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+
+  /* Default Theme: Dark Mode (Instrument Panel) */
+  --black: #000000;
+  --surface: #111111;
+  --surface-raised: #1a1a1a;
+  --border: #222222;
+  --border-visible: #333333;
+  --text-disabled: #666666;
+  --text-secondary: #999999;
+  --text-primary: #e8e8e8;
+  --text-display: #ffffff;
+  --interactive: #5b9bf6;
+
+  /* Status and Accents */
+  --accent: #d71921;
+  --accent-subtle: rgba(215, 25, 33, 0.15);
+  --success: #4a9e5c;
+  --warning: #d4a843;
+  --error: #d71921;
+  --gold: #ffd700;
+}
+
+/* Light Theme overrides (Printed Technical Manual) */
+.theme-light {
+  --black: #f5f5f5;
+  --surface: #ffffff;
+  --surface-raised: #f0f0f0;
+  --border: #e8e8e8;
+  --border-visible: #cccccc;
+  --text-disabled: #999999;
+  --text-secondary: #666666;
+  --text-primary: #1a1a1a;
+  --text-display: #000000;
+  --interactive: #007aff;
+}
+
+/*====================================
+ * CSS RESET & BASE STYLES
+ *====================================*/
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--black);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body.theme-transitioning,
+body.theme-transitioning *,
+body.theme-transitioning *::before,
+body.theme-transitioning *::after {
+  transition-property: background-color, color, border-color, fill, stroke;
+  transition-duration: 0.26s;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Typography Classes */
+.t-display-xl { font-family: var(--font-display); font-size: var(--display-xl); line-height: 1.0; letter-spacing: -0.03em; color: var(--text-display); }
+.t-display-lg { font-family: var(--font-display); font-size: var(--display-lg); line-height: 1.05; letter-spacing: -0.02em; color: var(--text-display); }
+.t-display-md { font-family: var(--font-display); font-size: var(--display-md); line-height: 1.1; letter-spacing: -0.02em; color: var(--text-display); }
+.t-heading { font-family: var(--font-body); font-size: var(--heading); line-height: 1.2; letter-spacing: -0.01em; color: var(--text-display); }
+.t-subheading { font-family: var(--font-body); font-size: var(--subheading); line-height: 1.3; color: var(--text-primary); }
+.t-label { font-family: var(--font-data); font-size: var(--label); line-height: 1.2; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
+.t-data { font-family: var(--font-data); font-size: var(--body-sm); }
+
+/* Utility Classes */
+.bg-surface { background-color: var(--surface); }
+.border-divider { border: 1px solid var(--border); }
+.border-visible { border: 1px solid var(--border-visible); }
+.text-accent { color: var(--accent); }
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-interactive { color: var(--interactive); }
+.text-gold { color: var(--gold); }
+.text-muted { color: var(--text-secondary); }
+
+/* Severity / status helpers (value-level color, never backgrounds) */
+.sev-pass { color: var(--success); }
+.sev-info { color: var(--text-secondary); }
+.sev-low { color: var(--warning); }
+.sev-medium { color: var(--warning); }
+.sev-high { color: var(--accent); }
+.sev-critical { color: var(--accent); font-weight: 700; }
+
+/* Dot-Matrix Motif */
+.dot-grid {
+  background-image: radial-gradient(circle, var(--border-visible) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.dot-grid-subtle {
+  background-image: radial-gradient(circle, var(--border) 0.5px, transparent 0.5px);
+  background-size: 12px 12px;
+}
+
+/* Basic Layout & Interactions */
+a,
+button {
+  transition: opacity 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+a:hover,
+button:hover {
+  opacity: 0.8;
+}
+
+/* Shared panel / table / input primitives */
+.panel {
+  padding: var(--space-lg);
+  border: 1px solid var(--border-visible);
+  background-color: var(--surface);
+}
+
+.section-title {
+  margin: var(--space-2xl) 0 var(--space-md);
+  letter-spacing: 0.12em;
+}
+
+.empty-state {
+  border: 1px solid var(--border-visible);
+  padding: var(--space-xl);
+  text-align: center;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+}
+
+.input-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-visible);
+  color: var(--text-primary);
+  font-family: var(--font-data);
+  font-size: var(--body);
+  padding: var(--space-sm) 0;
+
+  &:focus {
+    outline: none;
+    border-bottom-color: var(--text-primary);
+  }
+
+  &::placeholder {
+    color: var(--text-disabled);
+  }
+}
+
+.btn-primary {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-visible);
+  font-family: var(--font-data);
+  font-size: var(--label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: var(--space-sm) var(--space-lg);
+  min-height: 40px;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    color: var(--interactive);
+    border-color: var(--interactive);
+    opacity: 1;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: var(--space-xs) var(--space-sm);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--body-sm);
+}
+
+/* ROUTE TRANSITION ANIMATIONS */
+@keyframes fadeInSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.route-container {
+  animation: fadeInSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform;
+}
