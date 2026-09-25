@@ -43,6 +43,28 @@
       />
     </div>
 
+    <section class="panel charts-panel">
+      <div class="charts-grid">
+        <div class="chart-block">
+          <h2 class="t-label">{{ t('results.charts.category') }}</h2>
+          <app-xwa-chart
+            kind="h-bars"
+            [data]="categoryChartData"
+            title="Findings by category"
+          />
+        </div>
+        <div class="chart-block">
+          <h2 class="t-label">{{ t('results.charts.severity') }}</h2>
+          <app-xwa-chart
+            kind="donut"
+            [data]="severityChartData"
+            unit="FINDINGS"
+            title="Findings by severity"
+          />
+        </div>
+      </div>
+    </section>
+
     <h2 class="t-label section-title">{{ t('results.waf') }}</h2>
     <section class="panel">
       @if (analysis.waf_detections.length > 0) {

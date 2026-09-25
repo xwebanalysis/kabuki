@@ -15,6 +15,30 @@
   <div class="t-label text-success">{{ notice }}</div>
 }
 
+@if (history.length > 0 && !loading) {
+  <section class="panel charts-panel">
+    <div class="charts-grid">
+      <div class="chart-block">
+        <h2 class="t-label">{{ t('history.charts.per_day') }}</h2>
+        <app-xwa-chart
+          kind="line"
+          [data]="analysesPerDayData"
+          title="Analyses per day"
+        />
+      </div>
+      <div class="chart-block">
+        <h2 class="t-label">{{ t('history.charts.status') }}</h2>
+        <app-xwa-chart
+          kind="donut"
+          [data]="statusChartData"
+          unit="ANALYSES"
+          title="Analysis status distribution"
+        />
+      </div>
+    </div>
+  </section>
+}
+
 @if (history.length > 0) {
   <div class="history-list">
     @for (item of history; track item.id) {

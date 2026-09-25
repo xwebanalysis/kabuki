@@ -36,6 +36,27 @@
   margin-top: var(--space-lg);
 }
 
+.charts-panel {
+  margin-top: var(--space-lg);
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+}
+
+.chart-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  min-width: 0;
+
+  h2 {
+    margin: 0;
+  }
+}
+
 .cdn-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 2fr;
@@ -103,5 +124,9 @@
 
   .cdn-row {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
   }
 }

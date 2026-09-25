@@ -1,0 +1,65 @@
+<div class="xwa-chart">
+  <ng-container *ngIf="hasData; else emptyBlock">
+    <svg [attr.viewBox]="viewBox" role="img" [attr.aria-label]="chartAriaLabel()">
+      <!-- H-BARS -->
+      <ng-container *ngIf="kind === 'h-bars'">
+        <ng-container *ngFor="let row of hBarRows; let i = index">
+          <text [attr.x]="0" [attr.y]="20 + i * 26" class="chart-label" [attr.title]="row.label">{{ row.label }}</text>
+          <rect [attr.x]="118" [attr.y]="10 + i * 26" width="176" height="8" class="chart-track"></rect>
+          <rect [attr.x]="118" [attr.y]="10 + i * 26" [attr.width]="row.width" height="8" [attr.fill]="row.color" class="chart-bar-segment"></rect>
+          <text [attr.x]="302" [attr.y]="20 + i * 26" class="chart-value" text-anchor="end">{{ row.value }}</text>
+        </ng-container>
+      </ng-container>
+
+      <!-- DONUT -->
+      <ng-container *ngIf="kind === 'donut'">
+        <circle cx="56" cy="56" r="40" class="chart-track" fill="none" stroke-width="12"></circle>
+        <path
+          *ngFor="let arc of donutArcs"
+          [attr.d]="arc.path"
+          [attr.stroke]="arc.color"
+          fill="none"
+          stroke-width="12"
+          stroke-linecap="butt"
+          class="chart-donut-segment"></path>
+        <text x="56" y="52" class="chart-center-value" text-anchor="middle">{{ total }}</text>
+        <text x="56" y="64" class="chart-center-label" text-anchor="middle">{{ unit || 'TOTAL' }}</text>
+      </ng-container>
+
+      <!-- VERTICAL BARS -->
+      <ng-container *ngIf="kind === 'bars'">
+        <line *ngFor="let g of gridLines" [attr.x1]="g.x1" [attr.y1]="g.y1" [attr.x2]="g.x2" [attr.y2]="g.y2" class="chart-grid"></line>
+        <line x1="36" y1="168" x2="316" y2="168" class="chart-axis"></line>
+        <ng-container *ngFor="let col of barColumns">
+          <rect [attr.x]="col.x" [attr.y]="col.y" [attr.width]="col.w" [attr.height]="col.h" [attr.fill]="col.color" class="chart-bar-segment">
+            <title>{{ col.label }}: {{ col.value }}</title>
+          </rect>
+          <text [attr.x]="col.x + col.w / 2" [attr.y]="col.y - 4" class="chart-value" text-anchor="middle">{{ col.value }}</text>
+          <text [attr.x]="col.x + col.w / 2" [attr.y]="184" class="chart-label" text-anchor="middle">{{ col.label }}</text>
+        </ng-container>
+      </ng-container>
+
+      <!-- LINE -->
+      <ng-container *ngIf="kind === 'line'">
+        <line *ngFor="let g of gridLines" [attr.x1]="g.x1" [attr.y1]="g.y1" [attr.x2]="g.x2" [attr.y2]="g.y2" class="chart-grid"></line>
+        <line x1="40" y1="154" x2="314" y2="154" class="chart-axis"></line>
+        <polyline [attr.points]="lineGeometry.points" class="chart-line"></polyline>
+        <circle *ngFor="let dot of lineGeometry.dots" [attr.cx]="dot.x" [attr.cy]="dot.y" r="3" class="chart-line-dot"></circle>
+        <text *ngFor="let v of lineGeometry.values" [attr.x]="v.x" [attr.y]="v.y - 7" class="chart-value" text-anchor="middle">{{ v.label }}</text>
+        <text *ngFor="let l of lineGeometry.labels" [attr.x]="l.x" [attr.y]="170" class="chart-label" text-anchor="middle">{{ l.label }}</text>
+      </ng-container>
+    </svg>
+
+    <div class="chart-legend" *ngIf="kind === 'donut'">
+      <div class="legend-row" *ngFor="let item of donutLegend">
+        <span class="legend-swatch" [style.background]="item.color"></span>
+        <span class="legend-label" [attr.title]="item.label">{{ item.label }}</span>
+        <span class="legend-value">{{ item.value }}</span>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #emptyBlock>
+    <div class="t-label xwa-chart-empty">[ NO DATA AVAILABLE ]</div>
+  </ng-template>
+</div>
