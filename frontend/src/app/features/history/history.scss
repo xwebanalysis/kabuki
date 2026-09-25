@@ -4,6 +4,33 @@
   margin-bottom: var(--space-xl);
 }
 
+.charts-panel {
+  margin-bottom: var(--space-xl);
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+}
+
+.chart-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  min-width: 0;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .history-list {
   display: flex;
   flex-direction: column;

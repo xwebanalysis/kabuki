@@ -1,0 +1,116 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.xwa-chart svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.chart-label {
+  font-family: var(--font-data);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  fill: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.chart-value {
+  font-family: var(--font-data);
+  font-size: 10px;
+  fill: var(--text-primary);
+}
+
+.chart-center-value {
+  font-family: var(--font-display);
+  font-size: 24px;
+  fill: var(--text-display);
+}
+
+.chart-center-label {
+  font-family: var(--font-data);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  fill: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.chart-track {
+  fill: var(--border);
+}
+
+.chart-grid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.chart-axis {
+  stroke: var(--border-visible);
+  stroke-width: 1;
+}
+
+.chart-line {
+  fill: none;
+  stroke: var(--interactive);
+  stroke-width: 1.5;
+}
+
+.chart-line-dot {
+  fill: var(--interactive);
+}
+
+.chart-bar-segment,
+.chart-donut-segment {
+  transition: opacity 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.chart-bar-segment:hover,
+.chart-donut-segment:hover {
+  opacity: 0.8;
+}
+
+.xwa-chart-empty {
+  display: block;
+  padding: var(--space-md);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.chart-legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+  font-family: var(--font-data);
+  font-size: var(--label);
+  letter-spacing: 0.04em;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.legend-swatch {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+}
+
+.legend-label {
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.legend-value {
+  margin-left: auto;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
