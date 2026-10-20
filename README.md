@@ -98,3 +98,8 @@ Kabuki is designed to observe, not to attack:
 See [ROADMAP.md](ROADMAP.md) — pending: advanced bypass indicators, full edge IP-range
 maps, IP-vs-session scope detection and rule evasiveness work (deliberately out of
 scope under the anti-blocking policy).
+
+## License
+
+Proprietary — All rights reserved. See [LICENSE](LICENSE) for the full terms.
+For permission requests: x@xscriptor.com
